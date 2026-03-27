@@ -386,7 +386,6 @@
 
     .hero-right {
       position: relative;
-      overflow: hidden;
     }
     .hero-image-grid {
       display: grid;
@@ -508,7 +507,7 @@
 
     .services-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
     }
     .service-card {
@@ -1114,6 +1113,7 @@
        RESPONSIVE
     ========================================= */
     @media (max-width: 1024px) {
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
       .why-us-inner { grid-template-columns: 1fr; gap: 3rem; }
       .why-us-visual { order: -1; }
       .why-main-img { aspect-ratio: 16/9; }
@@ -1138,6 +1138,8 @@
       .hero-actions { justify-content: center; }
       .hero-stats { justify-content: center; }
       .hero-right { display: none; }
+
+      .services-grid { grid-template-columns: 1fr; }
 
       .gallery-grid {
         grid-template-columns: 1fr 1fr;
