@@ -1140,6 +1140,31 @@
     @media (max-width: 480px) {
       .process-steps { grid-template-columns: 1fr; }
     }
+    /* =========================================
+       CATEGORY POPUP MODAL
+    ========================================= */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000;
+      display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: var(--transition);
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal-container {
+      background: var(--cream); width: 90%; max-width: 800px; border-radius: var(--radius-lg); position: relative;
+      transform: translateY(30px); transition: var(--transition); overflow: hidden; box-shadow: var(--shadow-xl);
+    }
+    .modal-overlay.open .modal-container { transform: translateY(0); }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.1);
+      border: none; font-size: 1.2rem; cursor: pointer; transition: var(--transition); z-index: 10; font-family: sans-serif; color: white;
+    }
+    .modal-close:hover { background: rgba(0,0,0,0.3); }
+    .modal-content-wrap { display: flex; flex-wrap: wrap; }
+    .modal-image-col { flex: 1; min-width: 300px; position: relative; }
+    .modal-image { width: 100%; height: 100%; min-height: 250px; background-size: cover; background-position: center; }
+    .modal-text-col { flex: 1; min-width: 300px; padding: 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+    .modal-icon-wrap { font-size: 2.5rem; margin-bottom: 1rem; }
+    .modal-title { font-family: var(--font-serif); font-size: 1.75rem; color: var(--wood-dark); margin-bottom: 0.5rem; }
+    .modal-desc { font-size: 0.95rem; color: var(--gray-700); line-height: 1.6; margin-bottom: 1.5rem; }
   </style>
 </head>
 
@@ -1738,6 +1763,24 @@
     </div>
   </footer>
 
+  <!-- ===== CATEGORY MODAL ===== -->
+  <div id="category-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-container">
+      <button class="modal-close" aria-label="Close modal">&#10005;</button>
+      <div class="modal-content-wrap">
+        <div class="modal-image-col">
+          <div id="modal-image" class="modal-image"></div>
+        </div>
+        <div class="modal-text-col">
+           <div id="modal-icon" class="modal-icon-wrap"></div>
+           <h3 id="modal-title" class="modal-title"></h3>
+           <p id="modal-desc" class="modal-desc"></p>
+           <a href="#contact" class="btn btn-primary modal-btn" onclick="document.getElementById('category-modal').classList.remove('open');">Inquire About This</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===========================
        JAVASCRIPT
   =========================== -->
@@ -1828,6 +1871,63 @@
         
         requestAnimationFrame(animation);
       });
+    });
+
+    /* ---- Interactive Category Modals ---- */
+    const categoryCards = document.querySelectorAll('.service-card');
+    const categoryModal = document.getElementById('category-modal');
+    const modalCloseBtn = categoryModal ? categoryModal.querySelector('.modal-close') : null;
+    const mTitle = document.getElementById('modal-title');
+    const mDesc = document.getElementById('modal-desc');
+    const mIcon = document.getElementById('modal-icon');
+    const mImg = document.getElementById('modal-image');
+
+    const modalBgs = [
+      'url("images/gomez_hero_kitchen_1774607465460.png")',
+      'url("images/gomez_gallery_1_1774607474431.png")',
+      'url("images/gomez_gallery_2_1774607481189.png")',
+      'url("images/gomez_gallery_3_1774607485741.png")',
+      'url("images/gomez_gallery_4_1774607490050.png")',
+      'url("images/gomez_gallery_5_1774607495966.png")'
+    ];
+
+    function openCategoryModal(card, index) {
+      if(!categoryModal) return;
+      const title = card.querySelector('h3').innerText;
+      const desc = card.querySelector('p').innerText;
+      const iconHTML = card.querySelector('.service-icon').innerHTML;
+      
+      mTitle.innerText = title;
+      mDesc.innerText = desc;
+      mIcon.innerHTML = iconHTML;
+      mImg.style.backgroundImage = modalBgs[index % modalBgs.length];
+
+      categoryModal.classList.add('open');
+      categoryModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCategoryModal() {
+      if(!categoryModal) return;
+      categoryModal.classList.remove('open');
+      categoryModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    categoryCards.forEach((card, i) => {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', (e) => {
+        if(e.target.closest('a')) e.preventDefault();
+        openCategoryModal(card, i);
+      });
+    });
+
+    if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeCategoryModal);
+    if(categoryModal) categoryModal.addEventListener('click', (e) => {
+      if(e.target === categoryModal) closeCategoryModal();
+    });
+    document.addEventListener('keydown', e => { 
+      if (e.key === 'Escape' && categoryModal && categoryModal.classList.contains('open')) closeCategoryModal(); 
     });
   </script>
 </body>
