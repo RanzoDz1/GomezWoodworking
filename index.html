@@ -89,7 +89,7 @@
       --transition:  all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: auto; }
 
     body {
       font-family: var(--font-sans);
@@ -1788,15 +1788,40 @@
     }, { threshold: 0.12 });
     reveals.forEach(el => observer.observe(el));
 
-    /* ---- Smooth anchor scroll with nav offset ---- */
+    /* ---- Custom Premium Smooth Scroll Animation ---- */
+    function easeOutQuart(t) {
+      return 1 - (--t) * t * t * t;
+    }
+
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', e => {
-        const target = document.querySelector(anchor.getAttribute('href'));
+        const targetId = anchor.getAttribute('href');
+        if (targetId === '#') return;
+        const target = document.querySelector(targetId);
         if (!target) return;
+        
         e.preventDefault();
         const offset = 80;
-        const top = target.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top, behavior: 'smooth' });
+        const targetPosition = target.getBoundingClientRect().top + window.scrollY - offset;
+        const startPosition = window.scrollY;
+        const distance = targetPosition - startPosition;
+        const duration = 800; // ms
+        let startTime = null;
+        
+        function animation(currentTime) {
+          if (startTime === null) startTime = currentTime;
+          const timeElapsed = currentTime - startTime;
+          const progress = Math.min(timeElapsed / duration, 1);
+          
+          const ease = easeOutQuart(progress);
+          window.scrollTo(0, startPosition + (distance * ease));
+          
+          if (timeElapsed < duration) {
+            requestAnimationFrame(animation);
+          }
+        }
+        
+        requestAnimationFrame(animation);
       });
     });
   </script>
