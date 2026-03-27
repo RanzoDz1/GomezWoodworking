@@ -814,12 +814,22 @@
     }
     .testimonials-header { text-align: center; margin-bottom: 4rem; }
     .testimonials-header .section-label { justify-content: center; }
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    .testimonials-outer { position: relative; padding: 2rem 0; }
+    .testimonials-track {
+      display: flex;
       gap: 1.5rem;
+      width: max-content;
+      will-change: transform;
+      animation: scroll-x 25s linear infinite;
+    }
+    .testimonials-outer:hover .testimonials-track { animation-play-state: paused; }
+    @keyframes scroll-x {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
     .testimonial-card {
+      width: 380px;
+      flex-shrink: 0;
       background: var(--white);
       border-radius: var(--radius-lg);
       padding: 2rem;
@@ -1539,8 +1549,9 @@
           <p class="section-subtitle" style="margin-inline:auto;text-align:center;">The best measure of our work is the satisfaction of the families and businesses we serve.</p>
         </div>
 
-        <div class="testimonials-grid">
-          <article class="testimonial-card reveal">
+        <div class="testimonials-outer" style="max-width: 1120px; overflow: hidden; margin: 0 auto; -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%); mask-image: linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%);">
+          <div class="testimonials-track" id="testimonials-track">
+            <article class="testimonial-card reveal">
             <div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div>
             <p class="testimonial-text">"Gomez Woodworking transformed our kitchen completely. The cabinets fit perfectly and the quality is incredible — you can tell real craftsmen built these. They kept us updated the whole time."</p>
             <div class="testimonial-author">
@@ -1931,6 +1942,13 @@
     document.addEventListener('keydown', e => { 
       if (e.key === 'Escape' && categoryModal && categoryModal.classList.contains('open')) closeCategoryModal(); 
     });
+
+    /* ---- Marquee Auto Duplication ---- */
+    const track = document.getElementById('testimonials-track');
+    if (track) {
+      const clone = track.innerHTML;
+      track.innerHTML += clone;
+    }
   </script>
 </body>
 </html>
