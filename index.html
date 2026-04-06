@@ -91,7 +91,7 @@
       --transition:  all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    html { scroll-behavior: auto; }
+    html { scroll-behavior: auto; overflow-x: hidden; }
 
     body {
       font-family: var(--font-sans);
@@ -856,27 +856,40 @@
     .testimonials-outer {
       position: relative;
       padding: 2rem 0;
+      margin: 0 5%;
     }
     .testimonials-track-wrap {
       overflow: hidden;
+      border-radius: 16px;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
     }
     .testimonials-track {
       display: flex;
       gap: 1.5rem;
-      overflow-x: scroll;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-      width: 100%;
-      will-change: auto;
+      width: max-content;
+      animation: gw-marquee 45s linear infinite;
+      will-change: transform;
     }
-    .testimonials-track::-webkit-scrollbar { display: none; }
+
+    .testimonials-track-wrap:hover .testimonials-track,
+    .testimonials-outer:hover .testimonials-track {
+      animation-play-state: paused !important;
+    }
+
+    @keyframes gw-marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Keep testimonials marquee running regardless of OS reduced-motion setting */
+    .testimonials-track {
+      animation-duration: 45s !important;
+      animation-play-state: running !important;
+    }
     .testimonial-card {
-      flex: 0 0 calc(33.333% - 1rem);
-      min-width: 0;
+      flex: 0 0 340px;
       flex-shrink: 0;
-      scroll-snap-align: start;
       background: var(--white);
       border-radius: var(--radius-lg);
       padding: 2rem;
@@ -891,7 +904,7 @@
     }
     /* Reviews Navigation */
     .reviews-nav {
-      display: flex;
+      display: none;
       justify-content: center;
       align-items: center;
       gap: 12px;
@@ -1198,7 +1211,7 @@
     }
 
     @media (max-width: 1024px) and (min-width: 769px) {
-      .testimonial-card { flex: 0 0 calc(50% - 0.75rem); }
+      .testimonial-card { flex: 0 0 280px; }
     }
 
     @media (max-width: 768px) {
@@ -1276,18 +1289,27 @@
       .service-card p { font-size: 0.8rem; }
       .service-link { font-size: 0.8rem; margin-top: 0.75rem; }
 
-      /* Gallery: 2-column grid */
+      /* Gallery: uniform 2-column grid — override all desktop spans */
       .gallery-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
         gap: 8px;
       }
-      .gallery-item {
-        height: 160px;
+      .gallery-item,
+      .gallery-item:nth-child(1),
+      .gallery-item:nth-child(2),
+      .gallery-item:nth-child(3),
+      .gallery-item:nth-child(4),
+      .gallery-item:nth-child(5) {
+        grid-column: auto;
+        grid-row: auto;
+        height: 150px;
       }
-      .gallery-item:first-child {
+      /* Last item alone → span full width */
+      .gallery-item:nth-child(5) {
         grid-column: 1 / -1;
-        height: 200px;
+        height: 180px;
       }
 
       /* Process steps: single column */
@@ -1297,7 +1319,8 @@
       .footer-bottom { flex-direction: column; text-align: center; }
 
       .hero-badge { display: none; }
-      .testimonial-card { flex: 0 0 100%; }
+      .testimonial-card { flex: 0 0 260px; scroll-snap-align: start; }
+
     }
     /* =========================================
        CATEGORY POPUP MODAL
@@ -1735,10 +1758,6 @@
           </div>
           </div>
         </div>
-        <div class="reviews-nav">
-          <button class="reviews-arrow left" aria-label="Previous review">&#8249;</button>
-          <button class="reviews-arrow right" aria-label="Next review">&#8250;</button>
-        </div>
       </div>
     </section>
 
@@ -2103,49 +2122,73 @@
       if (e.key === 'Escape' && categoryModal && categoryModal.classList.contains('open')) closeCategoryModal(); 
     });
 
-    /* ---- Reviews Snap Carousel ---- */
-    function initReviewsCarousel() {
+    /* ══════════════════════════════════════════
+       TESTIMONIALS MARQUEE — Clone for infinite loop
+    ══════════════════════════════════════════ */
+    (function cloneTestimonialsForMarquee() {
       var track = document.getElementById('testimonials-track');
       if (!track) return;
-      var leftBtn = document.querySelector('.reviews-arrow.left');
-      var rightBtn = document.querySelector('.reviews-arrow.right');
+      var originals = Array.from(track.children);
+      originals.forEach(function(card) {
+        var clone = card.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        track.appendChild(clone);
+      });
+    })();
 
-      function getScrollAmount() {
-        var card = track.querySelector('.testimonial-card');
-        if (!card) return 300;
-        var gap = parseFloat(getComputedStyle(track).gap) || 24;
-        return card.offsetWidth + gap;
+    /* ══════════════════════════════════════════
+       TESTIMONIALS MARQUEE — Touch drag on mobile
+    ══════════════════════════════════════════ */
+    (function initTestimonialsDrag() {
+      var outer = document.querySelector('.testimonials-track-wrap');
+      var track = document.getElementById('testimonials-track');
+      if (!outer || !track) return;
+      var DURATION = 45;
+      var isDragging = false, startX = 0, startTranslate = 0;
+
+      function getTranslateX() {
+        var matrix = window.getComputedStyle(track).transform;
+        if (!matrix || matrix === 'none') return 0;
+        var m = matrix.match(/matrix\(([^)]+)\)/);
+        return m ? (parseFloat(m[1].split(',')[4]) || 0) : 0;
       }
 
-      function updateArrows() {
-        if (!leftBtn || !rightBtn) return;
-        leftBtn.classList.toggle('hidden', track.scrollLeft <= 2);
-        rightBtn.classList.toggle('hidden', track.scrollLeft >= track.scrollWidth - track.clientWidth - 2);
+      outer.addEventListener('touchstart', function(e) {
+        if (e.touches.length !== 1) return;
+        startTranslate = getTranslateX();
+        startX = e.touches[0].clientX;
+        isDragging = true;
+        /* Kill animation so inline transform takes over completely */
+        track.style.animationName = 'none';
+        track.style.transform = 'translateX(' + startTranslate + 'px)';
+      }, { passive: true });
+
+      outer.addEventListener('touchmove', function(e) {
+        if (!isDragging || e.touches.length !== 1) return;
+        track.style.transform = 'translateX(' + (startTranslate + e.touches[0].clientX - startX) + 'px)';
+      }, { passive: true });
+
+      function onTouchEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        var endX = parseFloat(track.style.transform.replace(/translateX\(|px\)/g, '')) || 0;
+        var halfW = track.scrollWidth / 2;
+        /* Normalise into first animation cycle */
+        var norm = endX % (-halfW);
+        if (norm > 0) norm -= halfW;
+        var delay = -(Math.abs(norm) / halfW) * DURATION;
+        /* Restart animation from drag-end position */
+        track.style.transform = '';
+        track.style.animationDelay = delay + 's';
+        track.style.animationName = 'none';
+        void track.offsetWidth; /* force reflow so browser sees the reset */
+        track.style.animationName = '';
+        track.style.removeProperty('animation-play-state');
       }
 
-      if (leftBtn) leftBtn.addEventListener('click', function() {
-        track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
-        clearInterval(autoTimer);
-      });
-      if (rightBtn) rightBtn.addEventListener('click', function() {
-        track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
-        clearInterval(autoTimer);
-      });
-
-      track.addEventListener('scroll', updateArrows, { passive: true });
-      setTimeout(updateArrows, 200);
-
-      var autoTimer = setInterval(function() {
-        if (track.scrollLeft >= track.scrollWidth - track.clientWidth - 2) {
-          track.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-          track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
-        }
-      }, 4500);
-
-      track.addEventListener('touchstart', function() { clearInterval(autoTimer); }, { passive: true });
-    }
-    initReviewsCarousel();
+      outer.addEventListener('touchend', onTouchEnd, { passive: true });
+      outer.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    })();
 
     /* ---- Back-Button Interceptor ---- */
     (function initBackInterceptor() {
