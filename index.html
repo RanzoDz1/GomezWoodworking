@@ -853,22 +853,30 @@
     }
     .testimonials-header { text-align: center; margin-bottom: 4rem; }
     .testimonials-header .section-label { justify-content: center; }
-    .testimonials-outer { position: relative; padding: 2rem 0; }
+    .testimonials-outer {
+      position: relative;
+      padding: 2rem 0;
+    }
+    .testimonials-track-wrap {
+      overflow: hidden;
+    }
     .testimonials-track {
       display: flex;
       gap: 1.5rem;
-      width: max-content;
-      will-change: transform;
-      animation: scroll-x 25s linear infinite;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      width: 100%;
+      will-change: auto;
     }
-    .testimonials-outer:hover .testimonials-track { animation-play-state: paused; }
-    @keyframes scroll-x {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
+    .testimonials-track::-webkit-scrollbar { display: none; }
     .testimonial-card {
-      width: 380px;
+      flex: 0 0 calc(33.333% - 1rem);
+      min-width: 0;
       flex-shrink: 0;
+      scroll-snap-align: start;
       background: var(--white);
       border-radius: var(--radius-lg);
       padding: 2rem;
@@ -880,6 +888,39 @@
       box-shadow: var(--shadow-lg);
       border-color: var(--wood-pale);
       transform: translateY(-4px);
+    }
+    /* Reviews Navigation */
+    .reviews-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-top: 2rem;
+    }
+    .reviews-arrow {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--wood-pale);
+      background: var(--white);
+      color: var(--wood-dark);
+      font-size: 1.5rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .reviews-arrow:hover {
+      background: var(--wood-warm);
+      color: var(--white);
+      border-color: var(--wood-warm);
+    }
+    .reviews-arrow.hidden {
+      opacity: 0.3;
+      pointer-events: none;
     }
     .testimonial-stars { color: var(--gold); font-size: 1rem; letter-spacing: 2px; margin-bottom: 1rem; }
     .testimonial-text {
@@ -1156,6 +1197,10 @@
       .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
     }
 
+    @media (max-width: 1024px) and (min-width: 769px) {
+      .testimonial-card { flex: 0 0 calc(50% - 0.75rem); }
+    }
+
     @media (max-width: 768px) {
       .nav-links, .nav-cta { display: none; }
       .nav-hamburger { display: flex; }
@@ -1252,6 +1297,7 @@
       .footer-bottom { flex-direction: column; text-align: center; }
 
       .hero-badge { display: none; }
+      .testimonial-card { flex: 0 0 100%; }
     }
     /* =========================================
        CATEGORY POPUP MODAL
@@ -1650,7 +1696,8 @@
           <p class="section-subtitle" style="margin-inline:auto;text-align:center;">The best measure of our work is the satisfaction of the families and businesses we serve.</p>
         </div>
 
-        <div class="testimonials-outer" style="max-width: 1120px; overflow: hidden; margin: 0 auto; -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%); mask-image: linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%);">
+        <div class="testimonials-outer" style="max-width: 1120px; margin: 0 auto;">
+          <div class="testimonials-track-wrap">
           <div class="testimonials-track" id="testimonials-track">
             <article class="testimonial-card">
             <div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div>
@@ -1685,10 +1732,15 @@
               </div>
             </div>
           </article>
+          </div>
+          </div>
+        </div>
+        <div class="reviews-nav">
+          <button class="reviews-arrow left" aria-label="Previous review">&#8249;</button>
+          <button class="reviews-arrow right" aria-label="Next review">&#8250;</button>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
     <!-- ===========================
          FAQ
@@ -2051,12 +2103,49 @@
       if (e.key === 'Escape' && categoryModal && categoryModal.classList.contains('open')) closeCategoryModal(); 
     });
 
-    /* ---- Marquee Auto Duplication ---- */
-    const track = document.getElementById('testimonials-track');
-    if (track) {
-      const clone = track.innerHTML;
-      track.innerHTML += clone;
+    /* ---- Reviews Snap Carousel ---- */
+    function initReviewsCarousel() {
+      var track = document.getElementById('testimonials-track');
+      if (!track) return;
+      var leftBtn = document.querySelector('.reviews-arrow.left');
+      var rightBtn = document.querySelector('.reviews-arrow.right');
+
+      function getScrollAmount() {
+        var card = track.querySelector('.testimonial-card');
+        if (!card) return 300;
+        var gap = parseFloat(getComputedStyle(track).gap) || 24;
+        return card.offsetWidth + gap;
+      }
+
+      function updateArrows() {
+        if (!leftBtn || !rightBtn) return;
+        leftBtn.classList.toggle('hidden', track.scrollLeft <= 2);
+        rightBtn.classList.toggle('hidden', track.scrollLeft >= track.scrollWidth - track.clientWidth - 2);
+      }
+
+      if (leftBtn) leftBtn.addEventListener('click', function() {
+        track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+        clearInterval(autoTimer);
+      });
+      if (rightBtn) rightBtn.addEventListener('click', function() {
+        track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+        clearInterval(autoTimer);
+      });
+
+      track.addEventListener('scroll', updateArrows, { passive: true });
+      setTimeout(updateArrows, 200);
+
+      var autoTimer = setInterval(function() {
+        if (track.scrollLeft >= track.scrollWidth - track.clientWidth - 2) {
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+        }
+      }, 4500);
+
+      track.addEventListener('touchstart', function() { clearInterval(autoTimer); }, { passive: true });
     }
+    initReviewsCarousel();
 
     /* ---- Back-Button Interceptor ---- */
     (function initBackInterceptor() {
