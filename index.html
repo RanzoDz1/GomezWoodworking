@@ -1142,44 +1142,6 @@
     .reveal-delay-4 { transition-delay: 0.4s; }
 
     /* =========================================
-       CAROUSEL ARROWS (mobile only)
-    ========================================= */
-    .carousel-wrap {
-      position: relative;
-    }
-    .carousel-arrow {
-      display: none;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--white);
-      color: var(--wood-dark);
-      border: 1px solid var(--gray-300);
-      box-shadow: var(--shadow-md);
-      font-size: 1rem;
-      cursor: pointer;
-      z-index: 10;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-    }
-    .carousel-arrow:hover {
-      background: var(--wood-warm);
-      color: var(--white);
-      border-color: var(--wood-warm);
-    }
-    .carousel-arrow.left { left: 4px; }
-    .carousel-arrow.right { right: 4px; }
-    .carousel-arrow.hidden { opacity: 0; pointer-events: none; }
-
-    @media (max-width: 768px) {
-      .carousel-arrow { display: flex; }
-    }
-
-    /* =========================================
        RESPONSIVE
     ========================================= */
     @media (max-width: 1024px) {
@@ -1221,6 +1183,9 @@
         margin-inline: auto;
         gap: 0.75rem;
       }
+      .hero-premium-content .hero-actions .btn {
+        justify-content: center;
+      }
       .hero-glass-bar {
         position: relative;
         bottom: auto;
@@ -1247,54 +1212,46 @@
       .glass-stat strong { font-size: 0.78rem; }
       .glass-stat span { font-size: 0.68rem; }
 
+      /* Services: 2-column compact grid */
       .services-grid {
-        display: flex;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        gap: 1rem;
-        padding: 0 1rem 12px;
-        scrollbar-width: none;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
       }
-      .services-grid::-webkit-scrollbar { display: none; }
       .service-card {
-        flex: 0 0 80vw;
-        min-width: 80vw;
-        scroll-snap-align: start;
+        padding: 1.25rem 1rem;
       }
+      .service-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
+        margin-bottom: 0.75rem;
+      }
+      .service-card h3 { font-size: 1rem; }
+      .service-card p { font-size: 0.8rem; }
+      .service-link { font-size: 0.8rem; margin-top: 0.75rem; }
 
+      /* Gallery: 2-column grid */
       .gallery-grid {
-        display: flex;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        gap: 12px;
-        padding: 0 1rem 12px;
-        scrollbar-width: none;
-        grid-template-rows: auto;
-      }
-      .gallery-grid::-webkit-scrollbar { display: none; }
-      .gallery-item:nth-child(n) {
-        grid-column: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
       }
       .gallery-item {
-        flex: 0 0 75vw;
-        min-width: 75vw;
-        scroll-snap-align: start;
+        height: 160px;
+      }
+      .gallery-item:first-child {
+        grid-column: 1 / -1;
         height: 200px;
       }
+
+      /* Process steps: single column */
+      .process-steps { grid-template-columns: 1fr; gap: 1rem; }
 
       .footer-top { grid-template-columns: 1fr; }
       .footer-bottom { flex-direction: column; text-align: center; }
 
       .hero-badge { display: none; }
-    }
-
-    @media (max-width: 480px) {
-      .process-steps {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }
     }
     /* =========================================
        CATEGORY POPUP MODAL
@@ -1386,7 +1343,7 @@
           <em>Look Good.</em>
         </h1>
         <p class="hero-desc">
-          Custom cabinetry crafted with integrity and passion. From kitchen renovations to commercial installations — we turn your vision into heirloom-quality woodwork.
+          Custom cabinetry crafted with integrity and passion. From kitchen renovations to commercial installations - we turn your vision into heirloom-quality woodwork.
         </p>
         <div class="hero-actions">
           <a href="#contact" class="btn btn-primary">Get Free Consultation</a>
@@ -1467,17 +1424,14 @@
         <div class="services-header">
           <div class="section-label">What We Build</div>
           <h2 class="section-title" id="services-heading">Custom Woodworking Services</h2>
-          <p class="section-subtitle">Every cabinet, shelf, and surface is built to your exact specifications — no off-the-shelf shortcuts.</p>
+          <p class="section-subtitle">Every cabinet, shelf, and surface is built to your exact specifications - no off-the-shelf shortcuts.</p>
         </div>
 
-        <div class="carousel-wrap" id="services-carousel">
-          <button class="carousel-arrow left hidden" aria-label="Scroll left">&#8249;</button>
-          <button class="carousel-arrow right" aria-label="Scroll right">&#8250;</button>
         <div class="services-grid">
           <article class="service-card reveal">
             <div class="service-icon" aria-hidden="true">🍳</div>
             <h3>Kitchen Cabinets</h3>
-            <p>Transform your kitchen with fully custom cabinetry — from layout to finish, built to match your style and maximize storage.</p>
+            <p>Transform your kitchen with fully custom cabinetry - from layout to finish, built to match your style and maximize storage.</p>
             <a href="#contact" class="service-link">
               Get a quote
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1513,7 +1467,7 @@
           <article class="service-card reveal reveal-delay-1">
             <div class="service-icon" aria-hidden="true">✨</div>
             <h3>Bespoke Woodworking</h3>
-            <p>Got a unique vision? We love one-of-a-kind projects — entertainment centers, built-in bookshelves, laundry rooms, and more.</p>
+            <p>Got a unique vision? We love one-of-a-kind projects - entertainment centers, built-in bookshelves, laundry rooms, and more.</p>
             <a href="#contact" class="service-link">
               Get a quote
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1528,7 +1482,6 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </article>
-        </div>
         </div>
       </div>
     </section>
@@ -1564,7 +1517,7 @@
                 <div class="why-feature-icon" aria-hidden="true">🛡️</div>
                 <div>
                   <h4>1-Year Comprehensive Warranty</h4>
-                  <p>Every project is covered for materials, workmanship, and adjustments — no fine print, no hassle.</p>
+                  <p>Every project is covered for materials, workmanship, and adjustments - no fine print, no hassle.</p>
                 </div>
               </div>
               <div class="why-feature reveal reveal-delay-1">
@@ -1578,7 +1531,7 @@
                 <div class="why-feature-icon" aria-hidden="true">📋</div>
                 <div>
                   <h4>Licensed, Bonded &amp; Insured</h4>
-                  <p>Workers' compensation and general liability coverage — protecting your home and our team.</p>
+                  <p>Workers' compensation and general liability coverage - protecting your home and our team.</p>
                 </div>
               </div>
               <div class="why-feature reveal reveal-delay-3">
@@ -1610,7 +1563,7 @@
             <div class="step-num" aria-hidden="true">1</div>
             <div class="step-icon" aria-hidden="true">💬</div>
             <h3>Free Consultation</h3>
-            <p>We listen to your ideas, assess your space, and discuss styles, materials, and your budget — no pressure, no obligation.</p>
+            <p>We listen to your ideas, assess your space, and discuss styles, materials, and your budget - no pressure, no obligation.</p>
             <div class="step-time">Day 1</div>
           </div>
           <div class="step-card reveal reveal-delay-1">
@@ -1651,9 +1604,6 @@
           <a href="#contact" class="btn btn-outline">Start Your Project</a>
         </div>
 
-        <div class="carousel-wrap" id="gallery-carousel">
-          <button class="carousel-arrow left hidden" aria-label="Scroll left">&#8249;</button>
-          <button class="carousel-arrow right" aria-label="Scroll right">&#8250;</button>
         <div class="gallery-grid" role="list" aria-label="Gallery of completed projects">
           <div class="gallery-item reveal" role="listitem">
             <div class="gallery-placeholder gp-2" aria-hidden="true" style="background-image: url('images/g_gal_kitchen_real_1774609105293.png'); background-size: cover; background-position: center;"></div>
@@ -1686,7 +1636,6 @@
             </div>
           </div>
         </div>
-        </div>
       </div>
     </section>
 
@@ -1705,7 +1654,7 @@
           <div class="testimonials-track" id="testimonials-track">
             <article class="testimonial-card">
             <div class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</div>
-            <p class="testimonial-text">"Gomez Woodworking transformed our kitchen completely. The cabinets fit perfectly and the quality is incredible — you can tell real craftsmen built these. They kept us updated the whole time."</p>
+            <p class="testimonial-text">"Gomez Woodworking transformed our kitchen completely. The cabinets fit perfectly and the quality is incredible - you can tell real craftsmen built these. They kept us updated the whole time."</p>
             <div class="testimonial-author">
               <div class="author-avatar" aria-hidden="true">MR</div>
               <div>
@@ -1759,7 +1708,7 @@
                   <span class="faq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="faq-answer" role="region">
-                  <div class="faq-answer-inner">Absolutely — every cabinet we build is custom. We work to your exact dimensions, whether your space is unusually narrow, tall, or angled. No space is too challenging.</div>
+                  <div class="faq-answer-inner">Absolutely - every cabinet we build is custom. We work to your exact dimensions, whether your space is unusually narrow, tall, or angled. No space is too challenging.</div>
                 </div>
               </div>
               <div class="faq-item">
@@ -1777,7 +1726,7 @@
                   <span class="faq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="faq-answer" role="region">
-                  <div class="faq-answer-inner">Our warranty covers all materials, workmanship defects, and adjustments. If anything isn't right within a year of installation, we'll make it right — no questions asked.</div>
+                  <div class="faq-answer-inner">Our warranty covers all materials, workmanship defects, and adjustments. If anything isn't right within a year of installation, we'll make it right - no questions asked.</div>
                 </div>
               </div>
               <div class="faq-item">
@@ -1786,7 +1735,7 @@
                   <span class="faq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="faq-answer" role="region">
-                  <div class="faq-answer-inner">Minor adjustments are possible early in the build process. We'll always discuss any impact on timeline or cost transparently before making changes. That's why our design phase is thorough — we want everything perfect before cutting starts.</div>
+                  <div class="faq-answer-inner">Minor adjustments are possible early in the build process. We'll always discuss any impact on timeline or cost transparently before making changes. That's why our design phase is thorough - we want everything perfect before cutting starts.</div>
                 </div>
               </div>
               <div class="faq-item">
@@ -1813,7 +1762,7 @@
           <div class="faq-cta-box reveal" id="contact">
             <div class="section-label" style="color:var(--gold-light);">Get In Touch</div>
             <h3>Ready to Start Your Project?</h3>
-            <p>Contact us today for a free consultation. We'll discuss your vision, take measurements, and provide a detailed quote — all at no cost.</p>
+            <p>Contact us today for a free consultation. We'll discuss your vision, take measurements, and provide a detailed quote - all at no cost.</p>
 
             <div class="faq-contact-list">
               <a href="tel:{{PHONE_TEL}}" class="faq-contact-item">
@@ -2102,136 +2051,12 @@
       if (e.key === 'Escape' && categoryModal && categoryModal.classList.contains('open')) closeCategoryModal(); 
     });
 
-    /* ---- Carousel Arrow Navigation ---- */
-    function initCarousel(wrapId, gridSelector) {
-      const wrap = document.getElementById(wrapId);
-      if (!wrap) return;
-      const grid = wrap.querySelector(gridSelector);
-      if (!grid) return;
-      const leftBtn = wrap.querySelector('.carousel-arrow.left');
-      const rightBtn = wrap.querySelector('.carousel-arrow.right');
-      if (!leftBtn || !rightBtn) return;
-
-      function updateArrows() {
-        const sl = grid.scrollLeft;
-        const maxScroll = grid.scrollWidth - grid.clientWidth;
-        leftBtn.classList.toggle('hidden', sl < 10);
-        rightBtn.classList.toggle('hidden', sl >= maxScroll - 10);
-      }
-
-      leftBtn.addEventListener('click', function() {
-        grid.scrollBy({ left: -grid.clientWidth * 0.8, behavior: 'smooth' });
-      });
-      rightBtn.addEventListener('click', function() {
-        grid.scrollBy({ left: grid.clientWidth * 0.8, behavior: 'smooth' });
-      });
-
-      grid.addEventListener('scroll', updateArrows, { passive: true });
-      // Initial check
-      setTimeout(updateArrows, 100);
-      window.addEventListener('resize', updateArrows);
-    }
-    initCarousel('services-carousel', '.services-grid');
-    initCarousel('gallery-carousel', '.gallery-grid');
-
     /* ---- Marquee Auto Duplication ---- */
     const track = document.getElementById('testimonials-track');
     if (track) {
       const clone = track.innerHTML;
       track.innerHTML += clone;
     }
-
-    /* ---- Testimonials Touch Momentum Scroll ---- */
-    (function initMarqueeDrag() {
-      if (!track) return;
-      var isDragging = false;
-      var startX = 0;
-      var currentTranslate = 0;
-      var prevTranslate = 0;
-      var velocity = 0;
-      var lastX = 0;
-      var lastTime = 0;
-      var animFrame = 0;
-      var wasAnimating = false;
-
-      function getTranslateX() {
-        var st = getComputedStyle(track);
-        var mat = new DOMMatrix(st.transform);
-        return mat.m41;
-      }
-
-      function setTranslate(x) {
-        // Loop: when past halfway, reset
-        var half = track.scrollWidth / 2;
-        if (x < -half) x += half;
-        if (x > 0) x -= half;
-        track.style.transform = 'translateX(' + x + 'px)';
-        currentTranslate = x;
-      }
-
-      track.addEventListener('touchstart', function(e) {
-        isDragging = true;
-        startX = e.touches[0].clientX;
-        // Pause CSS animation
-        wasAnimating = true;
-        track.style.animationPlayState = 'paused';
-        // Get current position
-        currentTranslate = getTranslateX();
-        prevTranslate = currentTranslate;
-        lastX = startX;
-        lastTime = Date.now();
-        velocity = 0;
-        cancelAnimationFrame(animFrame);
-      }, { passive: true });
-
-      track.addEventListener('touchmove', function(e) {
-        if (!isDragging) return;
-        var x = e.touches[0].clientX;
-        var diff = x - startX;
-        var now = Date.now();
-        var dt = now - lastTime;
-        if (dt > 0) {
-          velocity = (x - lastX) / dt; // px per ms
-        }
-        lastX = x;
-        lastTime = now;
-        setTranslate(prevTranslate + diff);
-      }, { passive: true });
-
-      track.addEventListener('touchend', function() {
-        if (!isDragging) return;
-        isDragging = false;
-
-        // Apply momentum
-        var friction = 0.95;
-        function momentumStep() {
-          if (Math.abs(velocity) < 0.01) {
-            // Resume auto-scroll from current position
-            resumeAnimation();
-            return;
-          }
-          velocity *= friction;
-          setTranslate(currentTranslate + velocity * 16);
-          animFrame = requestAnimationFrame(momentumStep);
-        }
-        animFrame = requestAnimationFrame(momentumStep);
-      }, { passive: true });
-
-      function resumeAnimation() {
-        if (!wasAnimating) return;
-        // Calculate how far through the animation we are
-        var half = track.scrollWidth / 2;
-        var progress = Math.abs(currentTranslate) / half;
-        var remainDuration = 25 * (1 - progress);
-        track.style.animation = 'none';
-        // Force reflow
-        void track.offsetHeight;
-        track.style.transform = '';
-        track.style.animation = 'scroll-x ' + remainDuration + 's linear infinite';
-        track.style.animationPlayState = 'running';
-        wasAnimating = false;
-      }
-    })();
 
     /* ---- Back-Button Interceptor ---- */
     (function initBackInterceptor() {
