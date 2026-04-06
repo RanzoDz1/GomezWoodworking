@@ -474,6 +474,45 @@
       opacity: 0.85;
     }
 
+    /* ---- Trust bar mobile premium badges ---- */
+    @media (max-width: 768px) {
+      .trust-bar {
+        padding: 1.25rem 0;
+      }
+      .trust-bar-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 0;
+      }
+      .trust-item {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 0.78rem;
+        gap: 8px;
+        transition: var(--transition);
+      }
+      .trust-item:last-child {
+        grid-column: 1 / -1;
+        justify-self: center;
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+      .trust-item-icon {
+        font-size: 1rem;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(201,168,76,0.12);
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+    }
+
     /* =========================================
        SERVICES
     ========================================= */
@@ -1103,6 +1142,44 @@
     .reveal-delay-4 { transition-delay: 0.4s; }
 
     /* =========================================
+       CAROUSEL ARROWS (mobile only)
+    ========================================= */
+    .carousel-wrap {
+      position: relative;
+    }
+    .carousel-arrow {
+      display: none;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--white);
+      color: var(--wood-dark);
+      border: 1px solid var(--gray-300);
+      box-shadow: var(--shadow-md);
+      font-size: 1rem;
+      cursor: pointer;
+      z-index: 10;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .carousel-arrow:hover {
+      background: var(--wood-warm);
+      color: var(--white);
+      border-color: var(--wood-warm);
+    }
+    .carousel-arrow.left { left: 4px; }
+    .carousel-arrow.right { right: 4px; }
+    .carousel-arrow.hidden { opacity: 0; pointer-events: none; }
+
+    @media (max-width: 768px) {
+      .carousel-arrow { display: flex; }
+    }
+
+    /* =========================================
        RESPONSIVE
     ========================================= */
     @media (max-width: 1024px) {
@@ -1121,13 +1198,54 @@
       .nav-links, .nav-cta { display: none; }
       .nav-hamburger { display: flex; }
 
-      .hero-premium { padding-bottom: 2rem; }
-      .hero-glass-bar { position: relative; bottom: auto; padding: 0 1rem; margin-top: 3rem; }
-      .hero-glass-inner {
+      .hero-premium {
+        min-height: auto;
+        display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+        padding-top: 72px;
+        padding-bottom: 0;
       }
-      .glass-divider { width: 100%; height: 1px; }
+      .hero-premium-content {
+        padding: 2.5rem 1.25rem 1.5rem;
+        text-align: center;
+        align-items: center;
+      }
+      .hero-premium-content .hero-tag { font-size: 0.7rem; }
+      .hero-premium-content .hero-title { font-size: clamp(2.2rem, 9vw, 3rem); }
+      .hero-premium-content .hero-desc { font-size: 0.95rem; margin-bottom: 1.5rem; }
+      .hero-premium-content .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 260px;
+        margin-inline: auto;
+        gap: 0.75rem;
+      }
+      .hero-glass-bar {
+        position: relative;
+        bottom: auto;
+        padding: 0 1rem 1.5rem;
+        margin-top: 1rem;
+      }
+      .hero-glass-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        padding: 0;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+      }
+      .glass-divider { display: none; }
+      .glass-stat {
+        gap: 8px;
+        padding: 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        border-right: 1px solid rgba(255,255,255,0.08);
+      }
+      .glass-stat:nth-child(even of .glass-stat) { border-right: none; }
+      .glass-icon, .glass-val { font-size: 1.2rem; }
+      .glass-stat strong { font-size: 0.78rem; }
+      .glass-stat span { font-size: 0.68rem; }
 
       .services-grid {
         display: flex;
@@ -1169,26 +1287,13 @@
       .footer-top { grid-template-columns: 1fr; }
       .footer-bottom { flex-direction: column; text-align: center; }
 
-      .trust-bar-inner { gap: 1.5rem; }
-
       .hero-badge { display: none; }
     }
 
     @media (max-width: 480px) {
       .process-steps {
-        display: flex;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
+        grid-template-columns: 1fr;
         gap: 1rem;
-        padding: 0 1rem 12px;
-        scrollbar-width: none;
-      }
-      .process-steps::-webkit-scrollbar { display: none; }
-      .step-card {
-        flex: 0 0 75vw;
-        min-width: 75vw;
-        scroll-snap-align: start;
       }
     }
     /* =========================================
@@ -1365,6 +1470,9 @@
           <p class="section-subtitle">Every cabinet, shelf, and surface is built to your exact specifications — no off-the-shelf shortcuts.</p>
         </div>
 
+        <div class="carousel-wrap" id="services-carousel">
+          <button class="carousel-arrow left hidden" aria-label="Scroll left">&#8249;</button>
+          <button class="carousel-arrow right" aria-label="Scroll right">&#8250;</button>
         <div class="services-grid">
           <article class="service-card reveal">
             <div class="service-icon" aria-hidden="true">🍳</div>
@@ -1420,6 +1528,7 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </article>
+        </div>
         </div>
       </div>
     </section>
@@ -1542,6 +1651,9 @@
           <a href="#contact" class="btn btn-outline">Start Your Project</a>
         </div>
 
+        <div class="carousel-wrap" id="gallery-carousel">
+          <button class="carousel-arrow left hidden" aria-label="Scroll left">&#8249;</button>
+          <button class="carousel-arrow right" aria-label="Scroll right">&#8250;</button>
         <div class="gallery-grid" role="list" aria-label="Gallery of completed projects">
           <div class="gallery-item reveal" role="listitem">
             <div class="gallery-placeholder gp-2" aria-hidden="true" style="background-image: url('images/g_gal_kitchen_real_1774609105293.png'); background-size: cover; background-position: center;"></div>
@@ -1573,6 +1685,7 @@
               <div class="gallery-caption">Built-In Bookshelf</div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </section>
@@ -1842,18 +1955,10 @@
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
 
-    /* ---- Sticky Nav (hide on scroll-down, show on scroll-up) ---- */
+    /* ---- Sticky Nav (always visible, just add scrolled bg) ---- */
     const nav = document.getElementById('mainNav');
-    var lastScrollY = 0;
     function handleNavScroll() {
-      var y = window.scrollY;
-      nav.classList.toggle('scrolled', y > 20);
-      if (y > 120 && y > lastScrollY) {
-        nav.style.transform = 'translateY(-100%)';
-      } else {
-        nav.style.transform = 'translateY(0)';
-      }
-      lastScrollY = y;
+      nav.classList.toggle('scrolled', window.scrollY > 20);
     }
     window.addEventListener('scroll', handleNavScroll, { passive: true });
 
@@ -1997,12 +2102,136 @@
       if (e.key === 'Escape' && categoryModal && categoryModal.classList.contains('open')) closeCategoryModal(); 
     });
 
+    /* ---- Carousel Arrow Navigation ---- */
+    function initCarousel(wrapId, gridSelector) {
+      const wrap = document.getElementById(wrapId);
+      if (!wrap) return;
+      const grid = wrap.querySelector(gridSelector);
+      if (!grid) return;
+      const leftBtn = wrap.querySelector('.carousel-arrow.left');
+      const rightBtn = wrap.querySelector('.carousel-arrow.right');
+      if (!leftBtn || !rightBtn) return;
+
+      function updateArrows() {
+        const sl = grid.scrollLeft;
+        const maxScroll = grid.scrollWidth - grid.clientWidth;
+        leftBtn.classList.toggle('hidden', sl < 10);
+        rightBtn.classList.toggle('hidden', sl >= maxScroll - 10);
+      }
+
+      leftBtn.addEventListener('click', function() {
+        grid.scrollBy({ left: -grid.clientWidth * 0.8, behavior: 'smooth' });
+      });
+      rightBtn.addEventListener('click', function() {
+        grid.scrollBy({ left: grid.clientWidth * 0.8, behavior: 'smooth' });
+      });
+
+      grid.addEventListener('scroll', updateArrows, { passive: true });
+      // Initial check
+      setTimeout(updateArrows, 100);
+      window.addEventListener('resize', updateArrows);
+    }
+    initCarousel('services-carousel', '.services-grid');
+    initCarousel('gallery-carousel', '.gallery-grid');
+
     /* ---- Marquee Auto Duplication ---- */
     const track = document.getElementById('testimonials-track');
     if (track) {
       const clone = track.innerHTML;
       track.innerHTML += clone;
     }
+
+    /* ---- Testimonials Touch Momentum Scroll ---- */
+    (function initMarqueeDrag() {
+      if (!track) return;
+      var isDragging = false;
+      var startX = 0;
+      var currentTranslate = 0;
+      var prevTranslate = 0;
+      var velocity = 0;
+      var lastX = 0;
+      var lastTime = 0;
+      var animFrame = 0;
+      var wasAnimating = false;
+
+      function getTranslateX() {
+        var st = getComputedStyle(track);
+        var mat = new DOMMatrix(st.transform);
+        return mat.m41;
+      }
+
+      function setTranslate(x) {
+        // Loop: when past halfway, reset
+        var half = track.scrollWidth / 2;
+        if (x < -half) x += half;
+        if (x > 0) x -= half;
+        track.style.transform = 'translateX(' + x + 'px)';
+        currentTranslate = x;
+      }
+
+      track.addEventListener('touchstart', function(e) {
+        isDragging = true;
+        startX = e.touches[0].clientX;
+        // Pause CSS animation
+        wasAnimating = true;
+        track.style.animationPlayState = 'paused';
+        // Get current position
+        currentTranslate = getTranslateX();
+        prevTranslate = currentTranslate;
+        lastX = startX;
+        lastTime = Date.now();
+        velocity = 0;
+        cancelAnimationFrame(animFrame);
+      }, { passive: true });
+
+      track.addEventListener('touchmove', function(e) {
+        if (!isDragging) return;
+        var x = e.touches[0].clientX;
+        var diff = x - startX;
+        var now = Date.now();
+        var dt = now - lastTime;
+        if (dt > 0) {
+          velocity = (x - lastX) / dt; // px per ms
+        }
+        lastX = x;
+        lastTime = now;
+        setTranslate(prevTranslate + diff);
+      }, { passive: true });
+
+      track.addEventListener('touchend', function() {
+        if (!isDragging) return;
+        isDragging = false;
+
+        // Apply momentum
+        var friction = 0.95;
+        function momentumStep() {
+          if (Math.abs(velocity) < 0.01) {
+            // Resume auto-scroll from current position
+            resumeAnimation();
+            return;
+          }
+          velocity *= friction;
+          setTranslate(currentTranslate + velocity * 16);
+          animFrame = requestAnimationFrame(momentumStep);
+        }
+        animFrame = requestAnimationFrame(momentumStep);
+      }, { passive: true });
+
+      function resumeAnimation() {
+        if (!wasAnimating) return;
+        // Calculate how far through the animation we are
+        var half = track.scrollWidth / 2;
+        var progress = Math.abs(currentTranslate) / half;
+        var remainDuration = 25 * (1 - progress);
+        track.style.animation = 'none';
+        // Force reflow
+        void track.offsetHeight;
+        track.style.transform = '';
+        track.style.animation = 'scroll-x ' + remainDuration + 's linear infinite';
+        track.style.animationPlayState = 'running';
+        wasAnimating = false;
+      }
+    })();
 
     /* ---- Back-Button Interceptor ---- */
     (function initBackInterceptor() {
